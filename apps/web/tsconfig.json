@@ -1,0 +1,30 @@
+{
+  "extends": "@tripagent/config/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@tripagent/types": [
+        "../../packages/types/src/index.ts"
+      ],
+      "@tripagent/ui": [
+        "../../packages/ui/src/index.ts"
+      ],
+      "@tripagent/db": [
+        "../../packages/db/src/index.ts"
+      ]
+    },
+    "allowJs": true,
+    "isolatedModules": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

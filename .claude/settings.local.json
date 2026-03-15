@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git ls-tree -r HEAD --name-only)",
+      "Bash(git ls-tree -r --name-only HEAD)",
+      "Bash(ls -la /Users/jhjeong/Documents/github/airport/ && git -C /Users/jhjeong/Documents/github/airport branch -a && git -C /Users/jhjeong/Documents/github/airport log --oneline)",
+      "Bash(ls -la /Users/jhjeong/Documents/github/airport/.claude/ && git -C /Users/jhjeong/Documents/github/airport show HEAD --stat)",
+      "Bash(pnpm install 2>&1)",
+      "Bash(pnpm type-check 2>&1)",
+      "Bash(pnpm lint 2>&1)",
+      "Bash(cd /Users/jhjeong/Documents/github/airport/apps/web && pnpm build 2>&1)",
+      "Bash(pnpm type-check 2>&1 && echo \"✓ type-check passed\")",
+      "Bash(cd /Users/jhjeong/Documents/github/airport/packages/db && pnpm db:generate 2>&1)",
+      "Bash(cd /Users/jhjeong/Documents/github/airport && pnpm type-check 2>&1)",
+      "Bash(cd /Users/jhjeong/Documents/github/airport/packages/db && npx dotenv -e ../../.env.local -- prisma migrate dev --name init 2>&1)",
+      "Bash(cd /Users/jhjeong/Documents/github/airport && pnpm install 2>&1 | tail -5)",
+      "Bash(find /Users/jhjeong/Documents/github/airport/node_modules/.pnpm -path \"*supabase/ssr*\" -name \"*.d.ts\" 2>/dev/null | head -5)"
+    ]
+  }
+}

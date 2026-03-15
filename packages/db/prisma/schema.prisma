@@ -1,0 +1,95 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String?
+  avatarUrl     String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  searchHistory SearchHistory[]
+  bookmarks     Bookmark[]
+  priceAlerts   PriceAlert[]
+
+  @@map("users")
+}
+
+model SearchHistory {
+  id           String         @id @default(cuid())
+  userId       String
+  rawQuery     String
+  searchParams Json           // CarSearchParams 타입
+  createdAt    DateTime       @default(now())
+  deletedAt    DateTime?      // 90일 후 soft delete
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  results      SearchResult[]
+
+  @@index([userId, createdAt])
+  @@map("search_history")
+}
+
+model SearchResult {
+  id              String        @id @default(cuid())
+  searchHistoryId String
+  rank            Int           // 1–5
+  carData         Json          // NormalizedCar 타입
+  price           Int           // 만원
+  score           Float
+  summary         String        // AI 추천 이유
+  priceAnalysis   String        // 시세 대비 분석
+  createdAt       DateTime      @default(now())
+  expiresAt       DateTime      // 30일 후 삭제
+  searchHistory   SearchHistory @relation(fields: [searchHistoryId], references: [id], onDelete: Cascade)
+
+  @@index([searchHistoryId])
+  @@index([expiresAt])
+  @@map("search_results")
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  carData   Json     // NormalizedCar 타입
+  note      String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("bookmarks")
+}
+
+model PriceAlert {
+  id           String     @id @default(cuid())
+  userId       String
+  searchParams Json       // CarSearchParams 타입
+  targetPrice  Int        // 만원 — 이 가격 이하이면 알림
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  logs         AlertLog[]
+
+  @@index([userId, isActive])
+  @@map("price_alerts")
+}
+
+model AlertLog {
+  id           String     @id @default(cuid())
+  priceAlertId String
+  triggeredAt  DateTime   @default(now())
+  currentPrice Int        // 만원 — 알림 발동 당시 가격
+  carData      Json       // 알림 발동 당시 매물 데이터
+  emailSent    Boolean    @default(false)
+  priceAlert   PriceAlert @relation(fields: [priceAlertId], references: [id], onDelete: Cascade)
+
+  @@index([priceAlertId])
+  @@map("alert_logs")
+}
