@@ -1,17 +1,28 @@
 "use client";
 
+import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const supabase = createClient();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
 
   async function handleGoogleLogin() {
-    await supabase.auth.signInWithOAuth({
+    setErrorMessage(null);
+    setIsPending(true);
+
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
+
+    if (error) {
+      setErrorMessage(error.message);
+      setIsPending(false);
+    }
   }
 
   return (
@@ -25,6 +36,7 @@ export default function LoginPage() {
         </div>
         <button
           onClick={handleGoogleLogin}
+          disabled={isPending}
           className="w-full flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -45,8 +57,11 @@ export default function LoginPage() {
               fill="#EA4335"
             />
           </svg>
-          Google로 로그인
+          {isPending ? "로그인 이동 중..." : "Google로 로그인"}
         </button>
+        {errorMessage ? (
+          <p className="text-sm text-red-600">{errorMessage}</p>
+        ) : null}
       </div>
     </main>
   );

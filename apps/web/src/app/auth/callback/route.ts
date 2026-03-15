@@ -6,6 +6,14 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
+  const errorCode = searchParams.get("error");
+  const errorDescription = searchParams.get("error_description");
+
+  if (errorCode) {
+    const errorUrl = new URL("/auth/error", origin);
+    errorUrl.searchParams.set("message", errorDescription ?? errorCode);
+    return NextResponse.redirect(errorUrl);
+  }
 
   if (code) {
     const cookieStore = await cookies();
@@ -30,7 +38,11 @@ export async function GET(request: NextRequest) {
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
     }
+
+    const errorUrl = new URL("/auth/error", origin);
+    errorUrl.searchParams.set("message", error.message);
+    return NextResponse.redirect(errorUrl);
   }
 
-  return NextResponse.redirect(`${origin}/auth/error`);
+  return NextResponse.redirect(`${origin}/auth/error?message=인증 코드가 없습니다.`);
 }
