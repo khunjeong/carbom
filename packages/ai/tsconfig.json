@@ -1,5 +1,12 @@
 {
   "extends": "@tripagent/config/tsconfig/base.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@tripagent/api-clients": ["../api-clients/src/index.ts"],
+      "@tripagent/types": ["../types/src/index.ts"]
+    }
+  },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

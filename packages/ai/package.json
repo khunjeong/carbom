@@ -9,7 +9,9 @@
   "dependencies": {
     "ai": "^4.0.0",
     "@ai-sdk/anthropic": "^1.0.0",
-    "@ai-sdk/google": "^1.0.0"
+    "@ai-sdk/google": "^1.0.0",
+    "@tripagent/api-clients": "workspace:*",
+    "@tripagent/types": "workspace:*"
   },
   "devDependencies": {
     "@tripagent/config": "workspace:*",
